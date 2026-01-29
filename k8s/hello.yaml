@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: hello
-        image: REPLACE_ME/hello-world:1.0.0
+        image: aenglish21/hello-world:1.0.0
         ports:
         - containerPort: 80
 ---
