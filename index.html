@@ -1,11 +1,370 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Hello World</title>
-  </head>
-  <body>
-    <h1>Hello World</h1>
-    <p>Served from Kubernetes via Argo CD.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAP Calendar Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Rajdhani:700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700,700i&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="cap-logo-section">
+                <div class="cap-logo">
+                    <img src="https://flwg.cap.gov/media/websites/FLWG_logo_1_7DC0E99BC6EA0_d8ba6.png" alt="Florida Wing CAP Logo" class="cap-logo-img">
+                </div>
+                <div class="header-text">
+                    <h1>Civil Air Patrol</h1>
+                    <h2>Florida Wing Calendar</h2>
+                    <h3>Admin Login</h3>
+                </div>
+            </div>
+
+            <div class="login-form">
+                <p class="login-instructions">Please sign in with your FLWG Microsoft 365 account to access the admin panel.</p>
+
+                <div id="login-error" class="error-message" style="display: none;"></div>
+
+                <button type="button" id="microsoft-login-btn" class="btn-primary btn-microsoft">
+                    <svg class="microsoft-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" width="20" height="20">
+                        <path fill="#f25022" d="M1 1h10v10H1z"/>
+                        <path fill="#00a4ef" d="M12 1h10v10H12z"/>
+                        <path fill="#7fba00" d="M1 12h10v10H1z"/>
+                        <path fill="#ffb900" d="M12 12h10v10H12z"/>
+                    </svg>
+                    Sign in with Microsoft
+                </button>
+
+                <p class="login-help">Your account must be a member of the Florida Wing with either a flwgcap.us or flwg.cap.gov email.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="calendar-container" style="display: none;">
+        <header class="cap-header">
+            <div class="cap-logo-section">
+                <div class="cap-logo">
+                    <img src="https://flwg.cap.gov/media/websites/FLWG_logo_1_7DC0E99BC6EA0_d8ba6.png" alt="Florida Wing CAP Logo" class="cap-logo-img">
+                </div>
+                <div class="header-text">
+                    <h1>Civil Air Patrol</h1>
+                    <h2>Florida Wing Calendar - Admin Panel</h2>
+                </div>
+            </div>
+            <div class="admin-header-controls">
+                <div class="user-info">
+                    <span id="user-name" class="user-name"></span>
+                    <span id="user-role" class="user-role"></span>
+                </div>
+                <button id="logout-btn" class="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <div class="admin-container">
+            <div class="admin-sidebar">
+                <nav class="admin-nav">
+                    <button class="admin-nav-btn active" data-section="add-event">Add Event</button>
+                    <button class="admin-nav-btn" data-section="manage-events">Manage Events</button>
+                    <button class="admin-nav-btn" data-section="calendar-preview">Calendar Preview</button>
+                    <a href="/user-guide" target="_blank" class="admin-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                        </svg>
+                        User Guide
+                    </a>
+                    <a href="/change-log" target="_blank" class="admin-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                        </svg>
+                        Change Log
+                    </a>
+                </nav>
+            </div>
+
+            <div class="admin-content">
+                <!-- Add Event Section -->
+                <div id="add-event-section" class="admin-section active">
+                    <h2>Add New Event</h2>
+                    <form id="event-form" class="event-form">
+                        <div class="form-group">
+                            <label for="event-title">Event Title *</label>
+                            <input type="text" id="event-title" name="title" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-description">Description</label>
+                            <textarea id="event-description" name="description" rows="4" maxlength="2000"></textarea>
+                            <div class="word-counter" id="event-description-counter">
+                                <span class="word-count">0</span> / <span class="word-limit">200</span> words
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="event-start-date">Start Date *</label>
+                                <input type="date" id="event-start-date" name="startDate" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="event-start-time">Start Time *</label>
+                                <input type="time" id="event-start-time" name="startTime" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="event-end-date">End Date *</label>
+                                <input type="date" id="event-end-date" name="endDate" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="event-end-time">End Time *</label>
+                                <input type="time" id="event-end-time" name="endTime" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-location">Location</label>
+                            <input type="text" id="event-location" name="location">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-registration-url">Registration Zone Link (optional)</label>
+                            <input type="url" id="event-registration-url" name="registrationUrl" placeholder="https://...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="event-is-recurring" name="isRecurring">
+                                <span>This is a recurring event</span>
+                            </label>
+
+                            <div class="recurrence-fields" id="event-recurrence-fields">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="event-recurring-type">Repeats</label>
+                                        <select id="event-recurring-type" name="recurringType">
+                                            <option value="weekly">Weekly</option>
+                                            <option value="daily">Daily</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="event-recurrence-interval">Repeat every</label>
+                                        <input type="number" id="event-recurrence-interval" name="recurrenceInterval" min="1" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="event-recurrence-end-date">End by (date)</label>
+                                        <input type="date" id="event-recurrence-end-date" name="recurrenceEndDate">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="event-recurrence-count">Or after occurrences</label>
+                                        <input type="number" id="event-recurrence-count" name="recurrenceCount" min="1" placeholder="e.g., 10">
+                                    </div>
+                                </div>
+
+                                <p class="help-text">Provide an end date or the number of occurrences to keep recurring events manageable.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Applicable Squadrons *</label>
+                            <div class="squadron-selection">
+                                <label class="checkbox-label" id="all-squadrons-container">
+                                    <input type="checkbox" id="all-squadrons" name="allSquadrons">
+                                    <span>All Squadrons (Wing Event)</span>
+                                </label>
+
+                                <div id="squadron-checkboxes" class="squadron-checkboxes">
+                                    <!-- Dynamically populated based on user access -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="request-wing-approval" name="requestWingApproval">
+                                <span>Request Wing Wide Event Approval</span>
+                            </label>
+                            <p class="help-text">Check this box to notify wing level staff to request approval to add this event to all calendars.</p>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Add Event</button>
+                            <button type="button" class="btn-secondary" id="clear-form-btn">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Manage Events Section -->
+                <div id="manage-events-section" class="admin-section">
+                    <h2>Manage Events</h2>
+                    <div class="search-container">
+                        <input type="text" id="event-search" class="search-input" placeholder="Search events by title, description, location, or squadron...">
+                        <button id="clear-search" class="clear-search-btn" style="display: none;">&times;</button>
+                    </div>
+                    <div id="events-list" class="events-list">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Calendar Preview Section -->
+                <div id="calendar-preview-section" class="admin-section">
+                    <h2>Calendar Preview</h2>
+                    <div class="calendar-controls">
+                        <div class="filter-group">
+                            <label for="preview-squadron-filter">Squadron:</label>
+                            <select id="preview-squadron-filter">
+                                <option value="">All Accessible Units</option>
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                    </div>
+                    <div id="preview-calendar" class="preview-calendar">
+                        <!-- Calendar preview will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Edit Event</h2>
+            <form id="edit-event-form" class="event-form">
+                <input type="hidden" id="edit-event-id" name="id">
+
+                <div class="form-group">
+                    <label for="edit-event-title">Event Title *</label>
+                    <input type="text" id="edit-event-title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-event-description">Description</label>
+                    <textarea id="edit-event-description" name="description" rows="4" maxlength="2000"></textarea>
+                    <div class="word-counter" id="edit-event-description-counter">
+                        <span class="word-count">0</span> / <span class="word-limit">200</span> words
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-event-start-date">Start Date *</label>
+                        <input type="date" id="edit-event-start-date" name="startDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-event-start-time">Start Time *</label>
+                        <input type="time" id="edit-event-start-time" name="startTime" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-event-end-date">End Date *</label>
+                        <input type="date" id="edit-event-end-date" name="endDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-event-end-time">End Time *</label>
+                        <input type="time" id="edit-event-end-time" name="endTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-event-location">Location</label>
+                    <input type="text" id="edit-event-location" name="location">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-event-registration-url">Registration Zone Link (optional)</label>
+                    <input type="url" id="edit-event-registration-url" name="registrationUrl" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="edit-event-is-recurring" name="isRecurring">
+                        <span>This is a recurring event</span>
+                    </label>
+
+                    <div class="recurrence-fields" id="edit-event-recurrence-fields">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="edit-event-recurring-type">Repeats</label>
+                                <select id="edit-event-recurring-type" name="recurringType">
+                                    <option value="weekly">Weekly</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-event-recurrence-interval">Repeat every</label>
+                                <input type="number" id="edit-event-recurrence-interval" name="recurrenceInterval" min="1" value="1">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="edit-event-recurrence-end-date">End by (date)</label>
+                                <input type="date" id="edit-event-recurrence-end-date" name="recurrenceEndDate">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-event-recurrence-count">Or after occurrences</label>
+                                <input type="number" id="edit-event-recurrence-count" name="recurrenceCount" min="1" placeholder="e.g., 10">
+                            </div>
+                        </div>
+
+                        <p class="help-text">Provide an end date or the number of occurrences to keep recurring events manageable.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Applicable Squadrons *</label>
+                    <div class="squadron-selection">
+                        <label class="checkbox-label" id="edit-all-squadrons-container">
+                            <input type="checkbox" id="edit-all-squadrons" name="allSquadrons">
+                            <span>All Squadrons (Wing Event)</span>
+                        </label>
+
+                        <div id="edit-squadron-checkboxes" class="squadron-checkboxes">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Update Event</button>
+                    <button type="button" class="btn-secondary modal-close-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>For bugs or questions, please contact: <a href="mailto:it@flwg.cap.gov">it@flwg.cap.gov</a></p>
+            <p>&copy; 2025 Civil Air Patrol, Florida Wing</p>
+        </div>
+    </footer>
+
+    <script src="admin.js"></script>
+</body>
 </html>
