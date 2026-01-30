@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - hello2.addisonserver.com
+        - hello3.addisonserver.com
       secretName: wildcard-addisonserver-tls
   rules:
-    - host: hello2.addisonserver.com
+    - host: hello3.addisonserver.com
       http:
         paths:
           - path: /
