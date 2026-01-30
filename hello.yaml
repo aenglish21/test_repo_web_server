@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: hello
-        image: ghcr.io/aenglish21/hello-world:1.0.0
+        image: ghcr.io/aenglish21/test_repo_web_server:7261b8537b0807c052a29e97d4eb9eb59ff860ed
         ports:
         - containerPort: 80
 ---
