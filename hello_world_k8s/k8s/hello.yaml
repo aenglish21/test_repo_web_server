@@ -45,10 +45,10 @@ spec:
   ingressClassName: traefik
   tls:
   - hosts:
-    - hello.addisonserver.com
+    - hello2.addisonserver.com
     secretName: wildcard-addisonserver-tls
   rules:
-  - host: hello.addisonserver.com
+  - host: hello2.addisonserver.com
     http:
       paths:
       - path: /
